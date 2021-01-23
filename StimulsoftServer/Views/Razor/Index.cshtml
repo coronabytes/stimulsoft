@@ -1,0 +1,112 @@
+﻿@using Stimulsoft.Report.Export
+@using Stimulsoft.Report.Mvc
+@using Stimulsoft.Report.Web
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stimulsoft</title>
+    <link rel="stylesheet" href="@Url.Action("GetBootstrap")">
+    <style>
+        .stiDesignerToolBar {
+            background: #10344b !important;
+        }
+
+        .stiDesignerFileMenu {
+            background: #10344b !important;
+        }
+
+        .stiDesignerStatusPanel {
+            background: #10344b !important;
+        }
+
+        .stiDesignerToolButton_Mouse {
+            background: #216a99 !important;
+        }
+
+        .stiDesignerToolButtonOver_Mouse {
+            background: #2f97da !important;
+        }
+    </style>
+</head>
+<body class="container">
+    @Html.StiNetCoreDesigner(new StiNetCoreDesignerOptions
+    {
+        Actions =
+        {
+            GetReport = "GetReport",
+            PreviewReport = "PreviewReport",
+            DesignerEvent = "DesignerEvent",
+            SaveReport = "SaveReport",
+            ExportReport = "ExportReport"
+        },
+        Server =
+        {
+            RouteTemplate = "/api/razor",
+            UseRelativeUrls = false,
+            CacheMode = StiServerCacheMode.ObjectCache
+        },
+        Behavior =
+        {
+            ShowSaveDialog = false
+        },
+        Exports =
+        {
+            ShowExportToCsv = false,
+            ShowExportToDbf = false,
+            ShowExportToDif = false,
+            ShowExportToDocument = false,
+            ShowExportToExcel = false,
+            ShowExportToExcel2007 = true,
+            ShowExportToExcelXml = false,
+            ShowExportToHtml = false,
+            ShowExportToHtml5 = false,
+            ShowExportToImageBmp = false,
+            ShowExportToImageGif = false,
+            ShowExportToImageJpeg = false,
+            ShowExportToImageMetafile = false,
+            ShowExportToImagePcx = false,
+            ShowExportToImagePng = true,
+            ShowExportToImageSvg = true,
+            ShowExportToImageSvgz = false,
+            ShowExportToImageTiff = true,
+            ShowExportToJson = true,
+            ShowExportToMht = false,
+            ShowExportToOpenDocumentCalc = true,
+            ShowExportToOpenDocumentWriter = true,
+            ShowExportToPdf = true,
+            ShowExportToPowerPoint = true,
+            ShowExportToRtf = true,
+            ShowExportToSylk = false,
+            ShowExportToText = false,
+            ShowExportToWord2007 = true,
+            ShowExportToXml = false,
+            ShowExportToXps = false,
+            DefaultSettings = new StiDefaultExportSettings
+            {
+                ExportToPdf =
+                {
+                    PdfComplianceMode = StiPdfComplianceMode.A3,
+                    AllowEditable = StiPdfAllowEditable.No
+                }
+            }
+        },
+        FileMenu =
+        {
+            ShowExit = false,
+            ShowAbout = false,
+            ShowClose = false,
+            ShowHelp = false,
+            ShowNew = false,
+            ShowInfo = true,
+            ShowOpen = true,
+            ShowOptions = true,
+            ShowSave = true,
+            ShowSaveAs = true,
+            ShowReportSetup = true
+        }
+    })
+</body>
+
+</html>
