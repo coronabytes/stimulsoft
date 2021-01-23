@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Stimulsoft.Report;
@@ -30,7 +30,7 @@ namespace StimulsoftServer.Controllers
 
             [HttpGet("GetReport")]
             [HttpPost("GetReport")]
-            public IActionResult GetReport([FromQuery] Guid template)
+            public async Task<IActionResult> GetReport([FromQuery] Guid template)
             {
                 var stiReport = StiReport.CreateNewReport();
 
@@ -41,16 +41,16 @@ namespace StimulsoftServer.Controllers
                     Test = "Test"
                 });
                 stiReport.Dictionary.SynchronizeBusinessObjects(5);
-                stiReport.Dictionary.Synchronize();
+                await stiReport.Dictionary.SynchronizeAsync();
 
-                return StiNetCoreDesigner.GetReportResult(this, stiReport);
+                return await StiNetCoreDesigner.GetReportResultAsync(this, stiReport);
             }
 
             [HttpGet("DesignerEvent")]
             [HttpPost("DesignerEvent")]
-            public IActionResult DesignerEvent()
+            public async Task<IActionResult> DesignerEvent()
             {
-                return StiNetCoreDesigner.DesignerEventResult(this);
+                return await StiNetCoreDesigner.DesignerEventResultAsync(this);
             }
 
             [HttpGet("bootstrap.css")]
@@ -63,27 +63,16 @@ namespace StimulsoftServer.Controllers
 
             [HttpGet("ExportReport")]
             [HttpPost("ExportReport")]
-            public IActionResult ExportReport([FromQuery] Guid template)
+            public async Task<IActionResult> ExportReport([FromQuery] Guid template)
             {
-                var sync = HttpContext.Features.Get<IHttpBodyControlFeature>();
-
-                if (sync != null)
-                    sync.AllowSynchronousIO = true;
-
                 var report = StiNetCoreDesigner.GetActionReportObject(this);
-                return StiNetCoreDesigner.ExportReportResult(this, report);
+                return await StiNetCoreDesigner.ExportReportResultAsync(this, report);
             }
 
             [HttpGet("PreviewReport")]
             [HttpPost("PreviewReport")]
-            public IActionResult PreviewReport([FromQuery] Guid template)
+            public async Task<IActionResult> PreviewReport([FromQuery] Guid template)
             {
-                var sync = HttpContext.Features.Get<IHttpBodyControlFeature>();
-
-                if (sync != null)
-                    sync.AllowSynchronousIO = true;
-
-
                 var stiReport = StiNetCoreDesigner.GetReportObject(this);
 
                 if (stiReport != null)
@@ -93,24 +82,24 @@ namespace StimulsoftServer.Controllers
                         Test = "Test"
                     });
                     stiReport.Dictionary.SynchronizeBusinessObjects(5);
-                    stiReport.Dictionary.Synchronize();
+                    await stiReport.Dictionary.SynchronizeAsync();
                 }
 
-                return StiNetCoreDesigner.PreviewReportResult(this, stiReport);
+                return await StiNetCoreDesigner.PreviewReportResultAsync(this, stiReport);
             }
 
             [HttpPost("SaveReport")]
-            public IActionResult SaveReport([FromQuery] Guid template)
+            public async Task<IActionResult> SaveReport([FromQuery] Guid template)
             {
                 var report = StiNetCoreDesigner.GetReportObject(this);
 
-                using var ms = new MemoryStream();
+                await using var ms = new MemoryStream();
                 report.Save(ms);
                 ms.Position = 0;
 
                 _memoryCache.Set(template.ToString("D"), ms.ToArray());
 
-                return StiNetCoreDesigner.SaveReportResult(this);
+                return await StiNetCoreDesigner.SaveReportResultAsync(this);
             }
         }
     }
